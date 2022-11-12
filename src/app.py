@@ -37,7 +37,12 @@ def handle_hello():
 
 
     return jsonify(response_body), 200
-
+@app.route ("/addingFamilyMember", methods = ['POST'])
+def addFamilyMember (): 
+    requestbody=request.get_json (force=True) #Access body of request, request looks like {"key":"value"}
+    # access value of objects like this: objectname ["keyname"]
+    jackson_family.add_member({"id":jackson_family._generateId(), "first_name":requestbody["first_name"], "last_name":requestbody["last_name"], "age":requestbody["age"],"lucky_numbers":requestbody["lucky_numbers"]})
+    return jsonify ("member added"),200
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
