@@ -25,8 +25,8 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/members', methods=['GET'])
-def handle_hello():
+@app.route('/gettingAllFamilyMembers', methods=['GET'])
+def getAllFamilyMembers():
 
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
@@ -37,6 +37,21 @@ def handle_hello():
 
 
     return jsonify(response_body), 200
+
+
+@app.route('/gettingFamilyMember/<int:member_id>', methods =['GET'])
+def getOneMember(member_id):
+    member=jackson_family.get_member(member_id) 
+    if member is None:
+        raise APIException ('this member does not exist',400)
+    response_body = {
+       
+        "member": member
+    }
+
+
+    return jsonify(response_body), 200
+
 @app.route ("/addingFamilyMember", methods = ['POST'])
 def addFamilyMember (): 
     requestbody=request.get_json (force=True) #Access body of request, request looks like {"key":"value"}
@@ -47,3 +62,4 @@ def addFamilyMember ():
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
