@@ -44,11 +44,15 @@ class FamilyStructure:
 
     def add_member(self, member):
         # fill this method and update the return
+        member["last_name"]=self.last_name
+        member["id"]=self._generateId()
         self._members.append (member)
 
     def delete_member(self, id):
         # fill this method and update the return
-        pass 
+        for index in range (len(self._members)):
+            if self._members [index] ["id"] == int (id):
+                self._members.pop (index)
 
     def get_member(self, id):
         # fill this method and update the return

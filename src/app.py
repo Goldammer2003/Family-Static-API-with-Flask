@@ -25,23 +25,21 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/gettingAllFamilyMembers', methods=['GET'])
+@app.route('/members', methods=['GET']) #gettingAllFamilyMembers
 def getAllFamilyMembers():
 
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
+   
 
 
-    return jsonify(response_body), 200
+    return jsonify(members), 200
 
 
-@app.route('/gettingFamilyMember/<int:member_id>', methods =['GET'])
-def getOneMember(member_id):
-    member=jackson_family.get_member(member_id) 
+@app.route('/member/<int:id>', methods =['GET'])
+ #/gettingFamilyMember/<int:member_id>
+def getOneMember(id):
+    member=jackson_family.get_member(id) 
     if member is None:
         raise APIException ('this member does not exist',400)
     response_body = {
@@ -52,13 +50,19 @@ def getOneMember(member_id):
 
     return jsonify(response_body), 200
 
-@app.route ("/addingFamilyMember", methods = ['POST'])
+@app.route ("/member", methods = ['POST']) #/addingFamilyMember
 def addFamilyMember (): 
     requestbody=request.get_json (force=True) #Access body of request, request looks like {"key":"value"}
     # access value of objects like this: objectname ["keyname"]
-    jackson_family.add_member({"id":jackson_family._generateId(), "first_name":requestbody["first_name"], "last_name":requestbody["last_name"], "age":requestbody["age"],"lucky_numbers":requestbody["lucky_numbers"]})
+    jackson_family.add_member({"id":jackson_family._generateId(), "first_name":requestbody["first_name"], "age":requestbody["age"],"lucky_numbers":requestbody["lucky_numbers"]})
     return jsonify ("member added"),200
 # this only runs if `$ python src/app.py` is executed
+@app.route('/member/<int:id>', methods =['DELETE'])
+def deletingFamilymember (id):
+    jackson_family.delete_member(id)
+    return jsonify ({"done":True}),200
+
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=True)
